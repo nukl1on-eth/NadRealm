@@ -125,6 +125,12 @@ window.projects = [
         name: 'DN',
         desc: 'Skrumpeys x Fantasy.top NFT which gives GTD WL to mint an NFT in the mainnet.',
         link: 'https://magiceden.io/collections/monad-testnet/0x151cf400af08bca390b16582ed6c4f096e4f17eb' 
+      },
+      {
+        avatar: 'Projects/Skrumpets/skrumpets_honoraries.webp',
+        name: 'Skrumpets Honoraries',
+        desc: 'An NFT collection of 20 honorary NFTs.',
+        link: 'https://magiceden.io/collections/monad-testnet/0xb6504041e84afd4e304f637c593f1b02b5812f34' 
       }
     ],
     sneakPeaks: [
@@ -1740,12 +1746,59 @@ window.projects = [
         extraText: "In Monad since March 2024, owner only of Nads and TG roles."
       }
     ],
+    collectionInfo: [
+      {
+        avatar: 'Projects/TheMonicorns/themonicorns_collection.webp',
+        name: "The Monicorns",
+        desc: 'You can receive a role in the Discord server for holding an NFT.',
+        link: 'https://magiceden.io/collections/monad-testnet/0xaf1077066c35dc03b079881c51d4f5f8c25ade65'
+      }
+    ],
     sneakPeaks: [
       'Projects/TheMonicorns/themonicorns_sneakpeek1.webp',
       'Projects/TheMonicorns/themonicorns_sneakpeek2.webp',
       'Projects/TheMonicorns/themonicorns_sneakpeek3.webp',
       'Projects/TheMonicorns/themonicorns_sneakpeek4.webp',
       'Projects/TheMonicorns/themonicorns_sneakpeek5.webp'
+    ],
+    rating: 2,
+    tags: ['pfp']
+  },
+  {
+    id: 'Frico',
+    title: 'Frico',
+    image: 'Projects/Frico/frico_header.webp',
+    avatar: 'Projects/Frico/frico_avatar.webp',
+    twitterUsername: 'frico_xyz',
+    shortDescription: "Frico is a NFT project on Monad, featuring a free mint of unique penguin-themed collectibles. It fosters community engagement through games, jokes nad contests.",
+    description: "Frico is a lively NFT project on Monad, centered around a sold-out free mint of unique penguin collectibles. It cultivates a fun-loving community through games, contests, and collaborative activities. The goal is to create a true cult of fun, embracing the quirky and humorous spirit of penguins. Join for a unique blend of creativity, collaboration, and constant amusement!",
+    links: {
+      twitter: 'https://x.com/frico_xyz',
+      discord: 'https://discord.com/invite/7EBxhWX4mg',
+      website: 'https://friconft.xyz/'
+    },
+    founders: [
+      {
+        twitter: '@milanweb3',
+        name: 'Milan',
+        desc: 'Founder of Frico',
+        extraText: "An artist who has been in the Monad community since May 2024, owner only of TG role."
+      }
+    ],
+    collectionInfo: [
+      {
+        avatar: 'Projects/Frico/frico_avatar.webp',
+        name: "The Frico",
+        desc: 'You can receive a role in the Discord server for holding an NFT.',
+        link: 'https://magiceden.io/collections/monad-testnet/0x10c4908af5a5eb3fda547bd0fae0e38a3ca56121'
+      }
+    ],
+    sneakPeaks: [
+      'Projects/Frico/frico_sneakpeek1.webp',
+      'Projects/Frico/frico_sneakpeek2.webp',
+      'Projects/Frico/frico_sneakpeek3.webp',
+      'Projects/Frico/frico_sneakpeek4.webp',
+      'Projects/Frico/frico_sneakpeek5.webp'
     ],
     rating: 2,
     tags: ['pfp']

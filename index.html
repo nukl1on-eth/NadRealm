@@ -1,1460 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NadRealm</title>
   <link rel="shortcut icon" href="avatar.png" type="image/x-icon">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- Предзагрузка шрифтов для лучшей производительности -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="background.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-XXXXXXXXXXXX" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <style>
-  :root {
-    --bg-color: #0f0f0f
-    --card-bg: #131313; 
-    --card-gradient: linear-gradient(135deg, var(--card-bg) 0%, var(--card-bg) 70%, #1a1a1a 100%);
-    --text-color: #e0e0e0;
-    --accent-color: #9b74c2;
-    --transition: 0.3s ease;
-    --card-animation-duration: 0.4s;
-  }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-  }
-  html, body {
-  height: 100%;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-  .main-content {
-    flex: 1 0 auto;
-    padding: 2rem 11vw;
-  }
-  h1 {
-    margin-bottom: 2rem;
-    font-weight: 600;
-    text-align: center;
-    color: var(--text-color);
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    align-items: start;
-  }
-  /* Обновлённый фон карточек */
-  .card {
-    position: relative;
-    background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b);
-    border-radius: 16px;
-    overflow: visible; /* обязательно! */
-    transition: transform var(--transition), box-shadow var(--transition);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    border: 1px solid rgba(255,255,255,0.08);
-    min-height: 44px; /* фиксированная минимальная высота для свёрнутого состояния */
-    
-  }
-  /* Если не нужен полупрозрачный псевдоэлемент, его можно убрать или обновить */
-  .card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 190px;
-    /* Если нужен эффект, можно задать такой же градиент, либо убрать фон */
-    background: none;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    z-index: 1;
-    pointer-events: none;
-  }
-  .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(130, 71, 229, 0.4);
-  }
-  .banner-wrapper {
-  position: relative;
-  width: 100%;
-  height: 190px;
-  background: #222;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  overflow: hidden;
-  z-index: 2;
-}
-.banner {
-  width: 100%;
-  height: 190px;
-  object-fit: cover;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  display: block;
-  z-index: 2;
-  position: relative;
-}
-  .avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    border: 4px solid #131313; /* теперь обводка черного цвета */
-    object-fit: cover;
-    position: absolute;
-    left: 32px;
-    top: 154px; /* 190px (баннер) - 36px (половина аватарки) */
-    z-index: 3;
-    background: var(--card-bg);
-  }
-  .card-title {
-    padding: 2.8rem 1.5rem 0.05rem 1.5rem; /* уменьшили нижний паддинг */
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--text-color);
-  }
-  .card-desc-block {
-    min-height: 48px;
-    padding: 0.2rem 1.5em 0.5rem 1.5em; /* одинаковый боковой паддинг */
-    display: flex;
-    align-items: center;
-  }
-  .card-desc {
-    color: #fff; /* ранее #ccc */
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  .links {
-    display: flex;
-    gap: 0.5rem;
-    margin: 0.5rem 0 0 0;
-    flex-wrap: wrap;
-  }
-  .links a {
-    display: inline-block;
-    padding: 0.3em 1em;
-    background: rgba(130,71,229,0.12);
-    color: var(--accent-color);
-    border-radius: 999px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-    font-size: 1rem;
-  }
-  .links a:hover {
-    background: var(--accent-color);
-    color: #fff;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
-    .card img {
-      height: 180px;
-    }
-  }
-  .stat-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3em 0.9em;
-    border-radius: 999px;
-    font-size: 1rem;
-    font-weight: 600;
-    background: rgba(255,255,255,0.07);
-    color: #fff;
-  }
-  .stat-chip.price {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.3em 1em;
-    border-radius: 999px;
-    background: rgba(130,71,229,0.18);
-    color: var(--accent-color);
-    font-weight: 600;
-    font-size: 1.05rem;
-  }
-  .stat-chip.up {
-    background: rgba(0,180,80,0.13);
-    color: #2ecc71;
-  }
-  .stat-chip.down {
-    background: rgba(220,50,50,0.13);
-    color: #e74c3c;
-  }
-  .card-links-divider {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    margin: 1.2rem 1.5rem 0.7rem 1.5rem;
-  }
-  .links.always-visible {
-    display: flex;
-    gap: 0.7rem;
-    margin: 0 1.5rem 1.2rem 1.5rem;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-  .links.always-visible a {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.3em 1.1em 0.3em 0.8em;
-    background: rgba(130,71,229,0.12);
-    color: var(--accent-color);
-    border-radius: 999px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-    font-size: 1rem;
-  }
-  .links.always-visible a:hover {
-    background: var(--accent-color);
-    color: #fff;
-  }
-  .collection-block {
-    display: flex;
-    align-items: center;
-    gap: 0.7em;
-    margin: 0.7em 1.5em 0.7em 1.5em;
-    background: rgba(130,71,229,0.07);
-    padding: 0.7em 1em;
-    min-height: 56px;
-    border-radius: 12px;
-    cursor: pointer; /* курсор как у ссылки */
-    transition: background 0.18s;
-  }
-  .collection-block:hover {
-    background: rgba(130,71,229,0.16);
-  }
-  .section-title {
-    margin: 0em 1.5em 0.5em 1.5em;
-    font-size: 1.23em;
-    font-weight: 700;
-    color: hsl(254, 84%, 75%);
-    letter-spacing: 0.01em;
-    opacity: 0.92;
-}
-.founder-block {
-  display: flex;
-  align-items: center;
-  gap: 0.7em;
-  margin: 0.7rem 1.5rem;
-  background: rgba(130,71,229,0.07);
-  padding: 0.7em 1em;
-  border-radius: 12px;
-  max-width: 100%;
-  transition: background 0.18s;
-  cursor: pointer;
-}
-.founder-block:hover {
-  background: rgba(130,71,229,0.16);
-}
-.founder-block > a {
-  display: inline-block;
-}
-.founder-block img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  background: #222;
-}
-.founder-block .founder-name {
-  font-weight: 700;
-  margin-bottom: 0.18em;
-  color: #8247e5; 
-}
-.founder-block .founder-desc,
-.founder-block .founder-extra {
-  margin-bottom: 0.18em;
-}
-.general-info-title {
-  text-indent: -0.2em; /* подберите или оставьте такое же значение */
-}
-.card-content {
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  transition: max-height var(--card-animation-duration) ease, opacity var(--card-animation-duration) ease;
-  pointer-events: none;
-  visibility: hidden;
-}
-.card.open {
-  overflow: visible !important;
-}
-.card.open .card-content {
-  max-height: 20000px;
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  overflow: visible;
-}
-.card.closing .card-content {
-  opacity: 0 !important;
-  pointer-events: none;
-  visibility: hidden;
-}
-.mini-description {
-  opacity: 0;
-  max-height: 0;
-  pointer-events: none;
-  transition: opacity 0.4s, max-height 0.4s;
-  overflow: hidden;
-  margin: 0.7em 1.5rem 0.5em 1.5rem;
-  text-align: left;
-}
-.mini-description.mini-description--visible {
-  opacity: 1;
-  max-height: 100px;
-  pointer-events: auto;
-}
-.card.closing .mini-description {
-  opacity: 0;
-  max-height: 0;
-  pointer-events: none;
-}
-.card-rating {
-  position: absolute;
-  top: 10px; 
-  left: 10px;
-  display: flex;
-  align-items: center;
-  background: rgba(14, 16, 15, 0.15);
-  padding: 0.2em 0.2em;
-  border-radius: 10px;
-  z-index: 3;
-}
-.card-rating .star {
-  font-size: 1.2rem;
-  background: none;
-  border: none;
-  padding: 0 4px;
-  line-height: 1;
-  display: inline-block;
-  border-radius: 8px;
-  text-shadow:
-    -1px -1px 0 rgba(28,28,28,0.35),   /* обводка (var(--card-bg) с прозрачностью) */
-     1px -1px 0 rgba(28,28,28,0.35),
-    -1px  1px 0 rgba(28,28,28,0.35),
-     1px  1px 0 rgba(28,28,28,0.35)   /* более заметная тень на бок */
-}
-.project-tags {
-  position: absolute;
-  top: 179.5px; /* перемещает блок выше (настраивайте по вкусу) */
-  right: 20px;
-  display: flex;
-  gap: 0.5em;
-  flex-wrap: wrap;
-  z-index: 6; /* выше, чем контент карточки */
-}
-.project-tag {
-  background: linear-gradient(135deg, #8e5cff 0%, #7d4be0 100%);
-  color: #fff;
-  padding: 0.25em 0.7em;      /* было 0.22em 0.62em */
-  border-radius: 20px;         /* было 18px */
-  font-size: 0.86rem;          /* было 0.81rem */
-  text-transform: uppercase;
-  font-weight: 600;
-  transition:
-    transform 0.15s cubic-bezier(.4,2,.6,1),
-    box-shadow 0.15s cubic-bezier(.4,2,.6,1),
-    background 0.18s;
-  box-shadow:
-    0 1.5px 6px rgba(130,71,229,0.11),
-    0 1px 0 #7d4be0 inset;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  display: inline-block;
-  position: relative;
-  background-blend-mode: lighten;
-}
-.project-tag:hover {
-  transform: scale(1.09) translateY(-2px);
-  box-shadow: 0 6px 18px rgba(130,71,229,0.18), 0 2px 0 #a084f7 inset;
-  background: linear-gradient(135deg, #a084f7 0%, #8e5cff 100%);
-  z-index: 2;
-}
-.sneak-peaks-block {
-  margin: 1.2em 1.5em 0.5em 1.5em;
-}
-.sneak-peaks-title {
-  font-size: 1.25rem; /* Сделать больше, как у других заголовков */
-  font-weight: 600;
-  margin-bottom: 0.4em;
-  color: hsl(254, 84%, 75%);
-  display: flex;
-  align-items: center;
-}
-.sneak-peaks-list {
-  display: flex;
-  gap: 0.6em;
-  overflow-x: auto;
-  overflow-y: visible;
-  padding: 0.4em; /* увеличили отступ сверху и снизу */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.sneak-peaks-list::-webkit-scrollbar {
-  display: none;
-}
-.sneak-peak-img {
-  width: calc((100% - 4 * 0.6em) / 5); /* допускает расчет подходящей ширины */
-  aspect-ratio: 1 / 1; /* задаёт квадратное соотношение сторон */
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid #eee;
-  background: #faf8ff;
-  transition: transform 0.15s;
-  transform-origin: center center;
-  pointer-events: auto;
-  z-index: 10;
-  cursor: pointer;
-}
-.sneak-peak-img:hover {
-  transform: scale(1.1);
-  margin-top: 0px; /* Пример: если увеличивается на 10%, то смещаем на 5% от исходной высоты */
-  box-shadow: 0 2px 8px rgba(130,71,229,0.18);
-}
-.card.closing .mini-description {
-  opacity: 0;
-  max-height: 0;
-  pointer-events: none;
-}
-#sneak-modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(20,16,32,0.92);
-  align-items: center;
-  justify-content: center;
-  transition: backdrop-filter 0.3s ease;
-}
-#sneak-modal.active {
-  display: flex;
-  backdrop-filter: blur(5px);
-}
-.card, .card * {
-  color: var(--text-color);
-}
-footer {
-  width: 100vw;
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b);
-  color: var(--text-color);
-  text-align: center;
-  padding: 2rem 0 1.5rem 0;
-  border-top: 1px solid #23202b;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 3rem;
-  flex-shrink: 0;
-}
-footer * {
-  color: var(--text-color);
-}
-.section-title,
-.founder-title,
-.general-info-title,
-.sneak-peaks-title {
-  color: rgba(131, 110, 249, 1) !important;
-}
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 26px;
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #888;
-  transition: .3s;
-  border-radius: 26px;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background-color: #fff;
-  transition: .3s;
-  border-radius: 50%;
-}
-.switch input:checked + .slider {
-  background-color: #8247e5;
-}
-.switch input:checked + .slider:before {
-  transform: translateX(22px);
-}
-.switch input:not(:checked) + .slider {
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-#sort-dropdown-menu {
-  min-width: unset !important;
-  width: max-content !important;
-  padding: 0.3em 0 !important;
-}
-.sort-option {
-  color: #fff !important;
-  font-weight: 600;
-  font-size: 0.97em !important;
-  letter-spacing: 0.01em;
-  padding: 0.5em 1em !important;
-  white-space: nowrap;
-}
-.sort-option:hover {
-  background: #23202b;
-  color: #9b74c2;
-}
-.sort-option.disabled-sort {
-  color: #888 !important;
-  background: none !important;
-  cursor: not-allowed !important;
-  opacity: 0.7;
-  pointer-events: none;
-}
-.sneak-peaks-list,
-.sneak-peak-img {
-  pointer-events: auto;
-}
-.hero-section {
-  width: 100%;
-  padding: 3.5rem 0 0rem 0;
-  text-align: center;
-  position: relative;
-  z-index: 10;;
-}
-.hero-title {
-  font-size: 2.3rem;
-  font-weight: 800;
-  color: #b18cff;
-  margin-bottom: 1.1rem;
-  letter-spacing: 0.01em;
-  text-shadow: 0 2px 16px #8247e540;
-}
-.hero-desc {
-  font-size: 1.18rem;
-  color: #e0e0e0;
-  max-width: 600px;
-  margin: 0 auto;
-  opacity: 0.92;
-  line-height: 1.6;
-}
-.hero-mono {
-  color: #a88cff;
-  font-weight: 700;
-  text-underline-offset: 2px;
-}
-@media (max-width: 600px) {
-  .hero-title { font-size: 1.35rem; }
-  .hero-desc { font-size: 1.01rem; }
-  .hero-section { padding: 2.2rem 0 1.2rem 0; }
-}
-.stat-card {
-  background: linear-gradient(135deg, #2b185a, #8247e5);
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin: 1.5rem auto;
-  max-width: 600px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.stat-label {
-  font-size: 1.2rem;
-  color: #e0e0e0;
-  margin-bottom: 0.5rem;
-}
-.stat-count {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-}
-.big-stat-card {
-  background: linear-gradient(135deg, #2b185a, #8247e5);
-  border-radius: 16px;
-  padding: 2rem;
-  margin: -1rem auto;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  margin-top: 0.5rem;
-}
-.big-stat-count {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
-}
-.big-stat-label {
-  font-size: 1.2rem;
-  color: #e0e0e0;
-}
-.submit-project-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.2em 1.8em;         /* увеличен вертикальный отступ для большей высоты */
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b); /* градиент в правый нижний угол */
-  color: #fff;
-  border: none;
-  border-radius: 8px;          /* умеренное скругление */
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.3s, transform 0.3s;
-  cursor: pointer;
-  max-width: fit-content;
-  margin: 0;  /* убраны автоматические отступы */
-}
-.submit-project-btn:hover {
-  transform: translateY(-3px);  /* чуть сильнее поднимаем кнопку при наведении */
-}
-.btn-icon {
-  width: 36px;
-  height: 36px;
-  background-color: #8247e5;  /* фиолетовый круг */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  color: #fff;
-  margin-right: 0.7em;
-  line-height: 1;
-}
-.btn-text {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-.btn-title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.2em;
-}
-.btn-subtitle {
-  font-size: 0.8rem;
-  color: #b0b0b0;
-}
-.feedback-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.2em 1.8em;          /* чуть меньше высоты, чтобы кнопка была компактной */
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b); /* тот же градиент, что и у другой кнопки */
-  color: #fff;
-  border: none;
-  border-radius: 8px;            /* умеренное скругление */
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.3s, transform 0.3s;
-  cursor: pointer;
-  max-width: fit-content;
-  margin: 0;  /* убраны автоматические отступы */
-}
-.feedback-btn:hover {
-  transform: translateY(-3px);
-}
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1.2em;
-  margin: 2em 0;
-}
-/* Убираем отступы, чтобы кнопки не занимали всю ширину и располагались рядом */
-.submit-project-btn,
-.feedback-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.2em 1.8em;
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.3s, transform 0.3s;
-  cursor: pointer;
-  max-width: fit-content;
-  margin: 0;  /* убраны автоматические отступы */
-}
-.submit-project-btn:hover,
-.feedback-btn:hover {
-  transform: translateY(-3px);
-}
-/* Для закрытых карточек фиксированная высота */
-.card:not(.open) {
-  min-height: 445px;  /* Замените 400px на желаемое значение */
-  padding-bottom: 70px; /* отступ, чтобы контент не заходил на футер */
-}
-
-/* Фиксированный футер только для закрытых карточек */
-.card:not(.open) .card-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-/* Открытая карточка - динамическая высота и футер в потоке */
-.card.open {
-  min-height: auto;
-  /* можно также убрать padding-bottom, если не нужен */
-}
-
-.card.open .card-footer {
-  position: static;
-}
-
-/* Остальные стили остаются без изменений */
-  /* Новая секция с баннером в приветственной области */
-  .hero-banner {
-    text-align: center;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-  .hero-banner img {
-    max-width: 100%;
-    height: auto;
-    max-height: 400px;  /* уменьшенный размер баннера */
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08); /* обводка, как у карточки */
-}
-
-#project-search {
-  background: linear-gradient(to bottom right, #0f0f0f, #1b1b1b);
-  border: 1px solid rgba(255,255,255,0.08); /* менее заметная обводка */
-  color: #fff;
-  padding: 0.5rem 1rem;
-  font-size: 1.1rem;
-  border-radius: 8px;
-}
-#project-search::placeholder {
-  color: rgba(255,255,255,0.7);
-}
-
-/* Если последняя карточка в ряду одиночная, увеличиваем её ширину */
-.grid > .card:last-child:nth-child(odd),
-.grid > .card:only-child {
-  grid-column: 1 / -1;
-  justify-self: center;
-  max-width: 625px; /* увеличенная ширина */
-}
-  </style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div id="mobile-warning" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f0f0f; display: none; align-items: center; justify-content: center; z-index: 3000; color: #fff; font-size: 1.5rem; text-align: center; padding: 2rem;">
-    The website only works from a computer, sorry.
-  </div>
   <div id="desktop-content">
-  <!-- Раздел с заголовком и описанием -->
-<div class="hero-section">
-  <div class="hero-title">Discover with Confidence.</div>
-  <div class="hero-desc">
-    Your trusted hub for every NFT collection on <span class="hero-mono">Monad</span>.<br>
-    Browse collections, explore project details, and learn about creators – all in one place.
-  </div>
-</div>
-<!-- Баннер-приветствие между текстом и счетчиком -->
-<div class="hero-banner">
-  <img src="header.jpg" alt="Welcome Banner">
-</div>
-<!-- Блок счетчика проектов -->
-<div class="big-stat-card" style="margin-bottom: 3.5rem;">
-  <div class="big-stat-count" id="projects-count">0</div>
-  <div class="big-stat-label">Total Projects</div>
-</div>
-  <div id="particles-js"></div>
-  <div class="main-content">
-    <!-- Блок с поиском по имени проекта, переключателем рейтингов и сортировкой -->
-<div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.5rem; position: relative;">
-  <!-- Поле поиска по имени проекта -->
-  <input 
-    type="text" 
-    id="project-search" 
-    placeholder="Search by project name..."
-  >
-  <!-- Блок переключателя рейтингов -->
-  <div style="display: flex; align-items: center; gap: 0.7em;">
-    <label class="switch">
-      <input type="checkbox" id="toggle-rating-switch">
-      <span class="slider"></span>
-    </label>
-    <span style="font-size: 1.1em; color: #e0e0e0;">Show ratings</span>
-  </div>
-  <!-- Блок сортировки, выравниваем его справа -->
-  <div id="sort-dropdown-container" style="margin-left: auto; position: relative;">
-    <button id="sort-dropdown-btn" style="background: #23202b; color: #fff; border: none; border-radius: 8px; padding: 0.5em 1.2em; font-size: 1em; display: flex; align-items: center; gap: 0.5em; cursor: pointer;">
-      <span id="sort-dropdown-label">Sort</span>
-      <svg width="18" height="18" fill="#fff" style="opacity: 0.7;" viewBox="0 0 24 24">
-        <path d="M7 10l5 5 5-5z"/>
-      </svg>
-    </button>
-    <div id="sort-dropdown-menu" style="display: none; position: absolute; top: 110%; right: 0; background: #18142a; border-radius: 10px; box-shadow: 0 4px 24px #0007; min-width: 180px; z-index: 10; padding: 0.5em 0;">
-      <div class="sort-option" data-sort="az" style="padding: 0.7em 1.2em; cursor: pointer;">Sort by Name (A → Z)</div>
-      <div class="sort-option" data-sort="za" style="padding: 0.7em 1.2em; cursor: pointer;">Sort by Name (Z → A)</div>
-      <div class="sort-option sort-rating" data-sort="rating-asc" style="padding: 0.7em 1.2em; cursor: pointer; display: none;">Sort by Rating (Low → High)</div>
-      <div class="sort-option sort-rating" data-sort="rating-desc" style="padding: 0.7em 1.2em; cursor: pointer; display: none;">Sort by Rating (High → Low)</div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">Discover with Confidence.</h1>
+      <p class="hero-desc">
+        Your trusted hub for every NFT collection on <span class="hero-mono">Monad</span>.<br>
+        Browse collections, explore project details, and learn about creators - all in one place.
+      </p>
+    </section>
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <img src="header.jpg" alt="Welcome Banner" loading="lazy">
     </div>
-  </div>
-</div>
-    <div class="grid" id="gallery"></div>
-  </div>
-  <script src="projects.js"></script>
-  <script>
-      const gallery = document.getElementById('gallery');
-      let openedCardIds = [];
-      let currentTag = 'all'; // глобальная переменная фильтра
-      let showRating = false;
-      let disableCardAnimation = false;
-      let sortMode = 'az'; // 'az', 'za', 'rating-asc', 'rating-desc'
 
-      const sortBtn = document.getElementById('sort-dropdown-btn');
-      const sortMenu = document.getElementById('sort-dropdown-menu');
+    <!-- Stats Section -->
+    <section class="big-stat-card" style="margin-bottom: 3.5rem;">
+      <div class="big-stat-count" id="projects-count">0</div>
+      <div class="big-stat-label">Total Projects</div>
+    </section>
 
-      sortBtn.onclick = function(e) {
-        e.stopPropagation();
-        const isOpen = sortMenu.style.display === 'block';
-        sortMenu.style.display = isOpen ? 'none' : 'block';
-      };
-      
-function updateSortMenu() {
-  document.querySelectorAll('.sort-rating').forEach(opt => {
-    if (showRating) {
-      opt.classList.remove('disabled-sort');
-      opt.style.pointerEvents = 'auto';
-      opt.style.display = ''; // Показываем сортировку по рейтингу
-    } else {
-      opt.classList.add('disabled-sort');
-      opt.style.pointerEvents = 'none';
-      opt.style.display = ''; // Оставляем видимой, но неактивной
-    }
-  });
-}
-
-      document.addEventListener('click', function(e) {
-        if (!sortMenu.contains(e.target) && e.target !== sortBtn) {
-          sortMenu.style.display = 'none';
-        }
-      });
-
-sortMenu.querySelectorAll('.sort-option').forEach(option => {
-  option.onclick = function(e) {
-    // Блокируем клик по сортировке рейтинга, если рейтинг выключен
-    if (this.classList.contains('disabled-sort')) return;
-    e.stopPropagation();
-    sortMode = this.dataset.sort;
-    sortMenu.style.display = 'none';
-    const openCard = document.querySelector('.card.open');
-    if (openCard) {
-      closeCard(openCard, openCard.dataset.id, false);
-      setTimeout(() => {
-        renderGallery();
-        updateSortMenu();
-      }, 450);
-    } else {
-      renderGallery();
-      updateSortMenu();
-    }
-  };
-});
-      function getBannerUrl(username) {
-        if (!username) return 'https://abs.twimg.com/images/themes/theme1/bg.png';
-        return `https://x.com/${username}/header_photo`;
-      }
-
-      function renderGallery() {
-  const projectsData = window.filteredProjects || window.projects;
-  // Чтобы всегда показывать общее количество проектов:
-  document.getElementById('projects-count').textContent = window.projects.length;
-  gallery.innerHTML = ''; // Очистка контейнера
-  let projectsToShow = projectsData.slice();
-
-  // Ваша сортировка...
-  if (sortMode === 'az') {
-    projectsToShow.sort((a, b) => a.title.localeCompare(b.title));
-  } else if (sortMode === 'za') {
-    projectsToShow.sort((a, b) => b.title.localeCompare(a.title));
-  } else if (sortMode === 'rating-asc') {
-    projectsToShow.sort((a, b) => (a.rating || 0) - (b.rating || 0));
-  } else if (sortMode === 'rating-desc') {
-    projectsToShow.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-  }
-
-  for (const project of projectsToShow) {
-          if (currentTag !== 'all' && (!project.tags || !project.tags.includes(currentTag))) {
-            continue;
-          }
-
-          const imgUrl = project.image || getBannerUrl(project.twitterUsername);
-          const isOpen = openedCardIds.includes(project.id);
-          
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.dataset.id = project.id;
-          
-          card.innerHTML = `
-  <div class="banner-wrapper">
-    ${showRating ? `
-      <div class="card-rating">
-        ${Array.from({length: project.rating || 0}).map(() => `<span class="star">⭐</span>`).join('')}
-      </div>
-    ` : ''}
-    <img class="banner" src="${imgUrl}" alt="${project.title}">
-  </div>
-  ${ project.tags ? `
-    <div class="project-tags">
-      ${project.tags.map(tag => `<span class="project-tag" onclick="event.stopPropagation(); filterByTag('${tag}');">${tag}</span>`).join('')}
-    </div>
-  ` : '' }
-  <img class="avatar" src="${project.avatar || 'default_avatar.png'}" alt="${project.title} avatar">
-  <div class="card-title">${project.title}</div>
-  <div class="mini-description">${project.shortDescription || ''}</div>
-  <div class="card-content">
-    <div class="section-title general-info-title">• General Info</div>
-    <div class="card-desc-block">
-      <div class="card-desc">
-        ${project.description || ''}
-      </div>
-    </div>
-    <div class="founder-blocks">
-      ${ project.founderTwitter ? `
-          <div class="section-title founder-title">• Founder</div>
-          <div class="founder-block" onclick="event.stopPropagation(); event.stopImmediatePropagation(); window.open('https://twitter.com/${project.founderTwitter}', '_blank'); return false;" style="cursor:pointer;">
-            <img src="https://unavatar.io/twitter/${project.founderTwitter}" alt="@${project.founderTwitter}">
-            <div>
-              <div class="founder-name">@${project.founderTwitter}</div>
-              <div class="founder-desc">${project.founderDesc || ''}</div>
-            </div>
+    <div id="particles-js"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Controls Bar -->
+      <div class="controls-bar">
+        <input 
+          type="text" 
+          id="project-search" 
+          placeholder="Search by project name..."
+          aria-label="Search projects"
+        >
+        
+        <!-- Rating Toggle -->
+        <div class="rating-toggle">
+          <label class="switch">
+            <input type="checkbox" id="toggle-rating-switch" aria-describedby="rating-label">
+            <span class="slider"></span>
+          </label>
+          <span class="rating-label" id="rating-label">Show ratings</span>
+        </div>
+        
+        <!-- Sort Dropdown -->
+        <div id="sort-dropdown-container" class="sort-container">
+          <button id="sort-dropdown-btn" class="sort-btn" aria-expanded="false" aria-haspopup="true">
+            <span id="sort-dropdown-label">Sort</span>
+            <svg width="18" height="18" fill="#fff" style="opacity: 0.7;" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 10l5 5 5-5z"/>
+            </svg>
+          </button>
+          <div id="sort-dropdown-menu" class="sort-menu" role="menu">
+            <div class="sort-option" data-sort="none" role="menuitem">None (Original Order)</div>
+            <div class="sort-option" data-sort="az" role="menuitem">Sort by Name (A → Z)</div>
+            <div class="sort-option" data-sort="za" role="menuitem">Sort by Name (Z → A)</div>
+            <div class="sort-option sort-rating" data-sort="rating-asc" role="menuitem">Sort by Rating (Low → High)</div>
+            <div class="sort-option sort-rating" data-sort="rating-desc" role="menuitem">Sort by Rating (High → Low)</div>
           </div>
-          ${project.extraText ? `<div class="founder-extra">${project.extraText}</div>` : ''}
-      ` : ''}
-      ${ Array.isArray(project.founders) ? `
-          <div class="section-title founder-title">• Founders</div>
-          ${project.founders.map(f => `
-            <div class="founder-block" onclick="window.open('https://twitter.com/${f.twitter}', '_blank')" style="cursor:pointer;">
-              <img src="https://unavatar.io/twitter/${f.twitter}" alt="@${f.twitter}">
-              <div>
-                <div class="founder-name">@${f.twitter}</div>
-                <div class="founder-desc">${f.desc || ''}</div>
-                ${f.extraText ? `<div class="founder-extra">${f.extraText}</div>` : ''}
-              </div>
-            </div>
-          `).join('')}
-
-      ` : ''}
-
-    </div>
-    ${ project.collectionInfo ? `
-      <div class="section-title">• Testnet Collections</div>
-      ${ Array.isArray(project.collectionInfo)
-          ? project.collectionInfo.map(info => `
-              <div class="collection-block" onclick="event.stopPropagation(); window.open('${info.link || '#'}', '_blank')">
-                <img src="${info.avatar || 'default_avatar.png'}" alt="${info.name}"
-                     style="width:40px;height:40px;border-radius:50%;border:2px solid #fff;background:#222;">
-                <div>
-                  <div style="font-weight:600;color:#8247e5;font-size:1.05em;">${info.name || ''}</div>
-                  <div style="font-size:0.98em;color:#fff;">${info.desc || ''}</div>
-                </div>
-              </div>
-            `).join('') : `
-              <div class="collection-block" onclick="window.open('${project.collectionInfo.link || '#'}', '_blank')">
-                <img src="${project.collectionInfo.avatar || 'default_avatar.png'}" alt="${project.collectionInfo.name}"
-                     style="width:40px;height:40px;border-radius:50%;border:2px solid #fff;background:#222;">
-                <div>
-                  <div style="font-weight:600;color:#8247e5;font-size:1.05em;">${project.collectionInfo.name || ''}</div>
-                  <div style="font-size:0.98em;color:#fff;">${project.collectionInfo.desc || ''}</div>
-                </div>
-              </div>
-            `
-      }
-    ` : ''}
-    ${ project.sneakPeaks && project.sneakPeaks.length ? `
-      <div class="sneak-peaks-block">
-        <div class="sneak-peaks-title">• Sneak Peaks</div>
-        <div class="sneak-peaks-list">
-          ${project.sneakPeaks.map(img => 
-            `<img src="${img}" alt="Sneak Peak" class="sneak-peak-img" onclick="event.stopPropagation(); event.stopImmediatePropagation(); showSneakModal('${img}')">`
-          ).join('')}
         </div>
       </div>
-    ` : ''}
+      
+      <!-- Gallery -->
+      <div class="grid" id="gallery"></div>
+    </main>
   </div>
-  <!-- Футер карточки прикреплённый к нижней части -->
-  <div class="card-footer">
-    <div class="card-links-divider"></div>
-    <div class="links always-visible">
-      <a href="${project.links.twitter}" target="_blank">
-        <svg class="social-ico" viewBox="0 0 24 24" width="20" height="20" fill="#fff" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17.53 3H21L14.47 10.39L22.24 21H16.16L11.38 14.67L5.99998 21H2.52998L9.52998 13.09L2.00001 3H8.23998L12.57 8.74L17.53 3ZM16.38 19H18.08L7.71998 4.89H5.88998L16.38 19Z"/>
-        </svg>
-        Twitter
-      </a>
-      ${project.links.discord ? `
-      <a href="${project.links.discord}" target="_blank">
-        <svg class="social-ico" viewBox="0 0 24 24" width="20" height="20" fill="#5865F2" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20.317 4.369A19.791 19.791 0 0 0 16.885 3.1a.112.112 0 0 0-.119.056c-.523.927-1.105 2.13-1.516 3.084a17.978 17.978 0 0 0-5.034 0c-.412-.954-.994-2.157-1.516-3.084a.115.115 0 0 0-.119-.056A19.736 19.736 0 0 0 3.683 4.369a.104.104 0 0 0-.047.043C.533 9.045-.32 13.579.099 18.057a.117.117 0 0 0 .045.082c2.053 1.507 4.042 2.422 5.993 3.029a.112.112 0 0 0 .123-.041c.462-.63.874-1.295 1.226-1.994a.112.112 0 0 0-.061-.155c-.652-.247-1.272-.548-1.872-.892a.112.112 0 0 1-.011-.186c.126-.094.252-.19.374-.287a.112.112 0 0 1 .114-.013c3.927 1.793 8.18 1.793 12.061 0a.112.112 0 0 1 .115.013c.122.098.248.193.374.287a.112.112 0 0 1-.011.186c-.6.344-1.22.645-1.872.892a.112.112 0 0 0-.061.155c.36.699.773 1.364 1.226 1.994a.112.112 0 0 0 .123.041c1.951-.607 3.94-1.522 5.993-3.029a.112.112 0 0 0 .045-.082c.5-5.177-.838-9.673-3.573-13.645a.104.104 0 0 0-.047-.043ZM8.02 15.331c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.174 1.094 2.156 2.418 0 1.334-.955 2.419-2.156 2.419Zm7.974 0c-1.183 0-2.156-1.085-2.156-2.419 0-1.333.955-2.418 2.156-2.418 1.21 0 2.174 1.094 2.156 2.418 0 1.334-.946 2.419-2.156 2.419Z"/>
-        </svg>
-        Discord
-      </a>
-      ` : ''}
 
-      ${project.links.telegram ? `
-      <a href="${project.links.telegram}" target="_blank">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" style="width:20px; height:20px; fill:#0088cc;">
-    <path d="M248 8C111 8 0 119 0 256S111 504 248 504 496 393 496 256 385 8 248 8zM363 176.7c-3.7 39.2-19.9 134.4-28.1 178.3-3.5 18.6-10.3 24.8-16.9 25.4-14.4 1.3-25.3-9.5-39.3-18.7-21.8-14.3-34.2-23.2-55.3-37.2-24.5-16.1-8.6-25 5.3-39.5 3.7-3.8 67.1-61.5 68.3-66.7 .2-.7 .3-3.1-1.2-4.4s-3.6-.8-5.1-.5q-3.3 .7-104.6 69.1-14.8 10.2-26.9 9.9c-8.9-.2-25.9-5-38.6-9.1-15.5-5-27.9-7.7-26.8-16.3q.8-6.7 18.5-13.7 108.4-47.2 144.6-62.3c68.9-28.6 83.2-33.6 92.5-33.8 2.1 0 6.6 .5 9.6 2.9a10.5 10.5 0 0 1 3.5 6.7A43.8 43.8 0 0 1 363 176.7z"/>
-  </svg>
-        Telegram
-      </a>
-      ` : ''}
+  <!-- Loading Animation -->
+  <div id="loading-animation" class="loading-container" style="display: none;" aria-hidden="true">
+    <div class="loading-spinner">
+      <div class="spinner-circle"></div>
+    </div>
+    <div class="loading-text">Loading more projects...</div>
+  </div>
 
-      ${project.links.website ? `
-      <a href="#" onclick="showWebsiteDisclaimer('${project.links.website}'); return false;">
-        <svg class="social-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
-          <ellipse cx="12" cy="12" rx="4" ry="10" stroke="#fff" stroke-width="2"/>
-          <line x1="2" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="2"/>
-        </svg>
-        Website
-      </a>
-      ` : ''}
+  <!-- Sneak Modal -->
+  <div id="sneak-modal" class="sneak-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <button id="sneak-prev" class="sneak-nav sneak-prev" aria-label="Previous image">&#8592;</button>
+    <img id="sneak-modal-img" src="" alt="Sneak Peak" class="sneak-image">
+    <button id="sneak-next" class="sneak-nav sneak-next" aria-label="Next image">&#8594;</button>
+    <div id="sneak-indicator" class="sneak-indicator"></div>
+    <button id="sneak-close" class="sneak-close" aria-label="Close modal">✕</button>
+  </div>
+
+  <!-- Rating Disclaimer Modal -->
+   <button id="tags-close-btn" class="tags-close-btn">✕</button>
+  <div id="rating-disclaimer-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-text">
+        Ratings are just the author's personal opinion and do not represent financial advice or an objective evaluation.
+      </div>
+      <div class="modal-buttons">
+        <button id="disclaimer-continue" class="btn-primary">Continue</button>
+        <button id="disclaimer-cancel" class="btn-secondary">Cancel</button>
+      </div>
     </div>
   </div>
-          `;
 
-          gallery.appendChild(card);
-          
-          card.querySelectorAll('.links.always-visible a').forEach(link => {
-           link.addEventListener('click', e => {
-             e.stopPropagation();
-          });
-          });
-          const miniDesc = card.querySelector('.mini-description');
-          if (!isOpen) {
-            miniDesc && miniDesc.classList.add('mini-description--visible');
-          } else {
-            miniDesc && miniDesc.classList.remove('mini-description--visible');
-          }
-
-          if (isOpen) {
-            setTimeout(() => {
-              card.classList.add('open');
-            }, 10);
-          }
-          
-          if (card.classList.contains('closing')) {
-            setTimeout(() => {
-              card.classList.remove('closing');
-            }, 500); // 500 мс = длительность анимации
-          }
-          
-          card.onclick = (event) => {
-  // Если клик произошёл внутри элемента с классом founder-block, не переключать карточку
-  if (event.target.closest('.founder-block')) return;
-  if (card.classList.contains('open')) {
-    closeCard(card, project.id);
-  } else {
-    openCard(card, project.id);
-  }
-};
-        }
-      }
-
-      function openCard(card, projectId) {
-  const openCard = document.querySelector('.card.open');
-  if (openCard && openCard !== card) {
-    closeCard(openCard, openCard.dataset.id, true);
-  }
-  card.classList.add('open');
-  card.querySelector('.mini-description')?.classList.remove('mini-description--visible');
-  openedCardIds = [projectId];
-
-  const content = card.querySelector('.card-content');
-  if (disableCardAnimation) {
-    content.style.transition = 'none';
-    content.style.maxHeight = '1000px';
-    content.style.opacity = '1';
-    content.style.visibility = 'visible';
-  } else {
-    setTimeout(() => {
-      content.style.maxHeight = '1000px';
-      content.style.opacity = '1';
-      content.style.visibility = 'visible';
-    }, 10);
-  }
-}
-
-function closeCard(card, projectId, rerender = true) {
-  card.classList.add('closing');
-  card.classList.remove('open');
-  card.querySelector('.mini-description')?.classList.remove('mini-description--visible');
-
-  const content = card.querySelector('.card-content');
-  content.style.opacity = '0';
-  content.style.maxHeight = '0';
-
-  setTimeout(() => {
-    card.classList.remove('closing');
-    openedCardIds = [];
-    // Всегда показываем mini-description после закрытия карточки
-    card.querySelector('.mini-description')?.classList.add('mini-description--visible');
-  }, 400);
-}
-
-function filterByTag(tag) {
-  currentTag = tag;
-  const openCard = document.querySelector('.card.open');
-  if (openCard) {
-    closeCard(openCard, openCard.dataset.id, false);
-    setTimeout(() => {
-      renderGallery();
-    }, 450);
-  } else {
-    renderGallery();
-  }
-}
-
-function showEscHint() {
-  const hint = document.getElementById('esc-hint');
-  if (!hint) return;
-  hint.style.display = 'block';
-  setTimeout(() => { hint.style.opacity = '1'; }, 10);
-  clearTimeout(hint._escTimeout);
-  hint._escTimeout = setTimeout(() => {
-    hint.style.opacity = '0';
-    setTimeout(() => { hint.style.display = 'none'; }, 350);
-  }, 2500);
-}
-
-function filterByTag(tag) {
-  currentTag = tag;
-  const openCard = document.querySelector('.card.open');
-  if (openCard) {
-    closeCard(openCard, openCard.dataset.id, false);
-    setTimeout(() => {
-      renderGallery();
-    }, 450);
-  } else {
-    renderGallery();
-  }
-  if (tag !== 'all') showEscHint();
-}
-
-let disclaimerAccepted = localStorage.getItem('disclaimerAccepted') === 'true';
-
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('project-search');
-  if (!searchInput) {
-    console.error('Элемент с id "project-search" не найден');
-    return;
-  }
-
-  // Новое: закрываем открытую карточку при получении фокуса на поисковом поле
-  searchInput.addEventListener('focus', function(e) {
-    const openCard = document.querySelector('.card.open');
-    if (openCard) {
-      closeCard(openCard, openCard.dataset.id, false);
-    }
-  });
-
-  searchInput.addEventListener('input', function(e) {
-    const query = e.target.value.trim().toLowerCase();
-    console.log('Поиск:', query);
-    if (Array.isArray(window.projects)) {
-      // Фильтрация осуществляется по названию проекта (свойство title)
-      window.filteredProjects = window.projects.filter(project =>
-        project.title.toLowerCase().includes(query)
-      );
-      console.log('Отфильтровано:', window.filteredProjects);
-      renderGallery();
-    } else {
-      console.error('window.projects не определён или не является массивом');
-    }
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleSwitch = document.getElementById('toggle-rating-switch');
-  toggleSwitch.checked = showRating;
-
-  let disclaimerAccepted = false;
-
-  toggleSwitch.onchange = function() {
-    if (this.checked && !disclaimerAccepted) {
-      this.checked = false;
-      document.getElementById('rating-disclaimer-modal').style.display = 'flex';
-      return;
-    }
-    showRating = this.checked;
-    if (document.querySelector('.card.open')) {
-      disableCardAnimation = true;
-    }
-    renderGallery();
-    updateSortMenu(); // <--- добавьте этот вызов
-    setTimeout(() => { disableCardAnimation = false; }, 0);
-  };
-
-  document.getElementById('disclaimer-continue').onclick = function(e) {
-    e.stopPropagation();
-    disclaimerAccepted = true;
-    document.getElementById('rating-disclaimer-modal').style.display = 'none';
-    toggleSwitch.checked = true;
-    showRating = true;
-    disableCardAnimation = true;
-    renderGallery();
-    updateSortMenu(); // <--- добавьте этот вызов
-    setTimeout(() => { disableCardAnimation = false; }, 0);
-  };
-
-  document.getElementById('disclaimer-cancel').onclick = function(e) {
-    e.stopPropagation();
-    document.getElementById('rating-disclaimer-modal').style.display = 'none';
-    toggleSwitch.checked = false;
-  };
-
-  document.getElementById('sneak-prev').onclick = function(e) {
-    e.stopPropagation();
-    if (sneakPeaksArr.length) {
-      sneakPeaksIdx = (sneakPeaksIdx > 0) ? sneakPeaksIdx - 1 : sneakPeaksArr.length - 1;
-      updateSneakModal();
-    }
-  };
-
-  document.getElementById('sneak-next').onclick = function(e) {
-    e.stopPropagation();
-    if (sneakPeaksArr.length) {
-      sneakPeaksIdx = (sneakPeaksIdx < sneakPeaksArr.length - 1) ? sneakPeaksIdx + 1 : 0;
-      updateSneakModal();
-    }
-  };
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      const modal = document.getElementById('sneak-modal');
-      if (modal.classList.contains('active')) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
-        event.stopPropagation();
-        return;
-      }
-      if (currentTag !== 'all') {
-        currentTag = 'all';
-        renderGallery();
-      }
-    }
-  });
-
-  // Добавляем обработчик клика по самому модальному окну для закрытия, если клик вне содержимого
-  document.getElementById('sneak-modal').addEventListener('click', function(e) {
-    if (e.target === this) {
-      this.classList.remove('active');
-      this.style.display = 'none';
-    }
-  });
-
-  // Другие вызовы: например, начальное рендеринг галереи и меню сортировки
-  renderGallery();
-  updateSortMenu();
-});
-</script>
-  </script>
-<div id="sneak-modal" style="display:none;position:fixed;z-index:1000;left:0;top:0;width:100vw;height:100vh;background:rgba(20,16,32,0.92);align-items:center;justify-content:center;">
-  <button id="sneak-prev" style="position:absolute;left:3vw;top:50%;transform:translateY(-50%);background:none;border:none;font-size:3rem;color:#fff;cursor:pointer;user-select:none;">&#8592;</button>
-  <img id="sneak-modal-img" src="" alt="Sneak Peak" style="max-width:90vw;max-height:90vh;border-radius:16px;box-shadow:0 4px 32px #000;">
-  <button id="sneak-next" style="position:absolute;right:3vw;top:50%;transform:translateY(-50%);background:none;border:none;font-size:3rem;color:#fff;cursor:pointer;user-select:none;">&#8594;</button>
-  <div id="sneak-indicator" style="position:absolute;bottom:4vh;left:50%;transform:translateX(-50%);color:#fff;font-size:1.1rem;opacity:0.8;"></div>
-</div>
-<div id="rating-disclaimer-modal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;backdrop-filter:blur(7px);background:rgba(20,16,32,0.65);align-items:center;justify-content:center;">
-  <div style="background:#18142a;padding:2.2em 2.5em;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.5);max-width:420px;width:90vw;text-align:center;">
-    <div style="color:#e0e0e0;font-size:1.08em;margin-bottom:2em;">
-      Ratings are just the author's personal opinion and do not represent financial advice or an objective evaluation.
-    </div>
-    <div style="display:flex;gap:1.2em;justify-content:center;">
-      <button id="disclaimer-continue" style="padding:0.6em 1.5em;background:#8247e5;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;">Continue</button>
-      <button id="disclaimer-cancel" style="padding:0.6em 1.5em;background:#23202b;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;">Cancel</button>
+  <!-- Website Disclaimer Modal -->
+  <div id="website-disclaimer-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-text">
+        We are not responsible for what happens on external websites. Do not connect your wallet to random sites.
+      </div>
+      <button id="website-disclaimer-continue" class="btn-primary">Continue</button>
     </div>
   </div>
-</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Проверка userAgent или ширины экрана сразу при загрузке
-      if (/Mobi|Android|iPhone/i.test(navigator.userAgent) || window.innerWidth < 768) {
-        document.getElementById('mobile-warning').style.display = 'flex';
-        document.getElementById('desktop-content').style.display = 'none';
-      }
-    });
-  </script>
-</body>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  let pendingWebsiteUrl = '';
-
-  window.showWebsiteDisclaimer = function(url) {
-    pendingWebsiteUrl = url;
-    const modal = document.getElementById('website-disclaimer-modal');
-    modal.style.display = 'flex';
-  };
-
-  document.getElementById('website-disclaimer-continue').onclick = function(e) {
-    e.stopPropagation();
-    const modal = document.getElementById('website-disclaimer-modal');
-    modal.style.display = 'none';
-    window.open(pendingWebsiteUrl, '_blank');
-  };
-});
-</script>
-
-<!-- Добавьте модальное окно для дисклеймера вебсайта после существующих модальных блоков -->
-<div id="website-disclaimer-modal" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;backdrop-filter:blur(7px);background:rgba(20,16,32,0.65);align-items:center;justify-content:center;">
-  <div style="background:#18142a;padding:2em 2.5em;border-radius:18px;box-shadow:0 8px 32px rgba(0,0,0,0.5);max-width:420px;width:90vw;text-align:center;">
-    <div style="color:#e0e0e0;font-size:1.08em;margin-bottom:2em;">
-      We are not responsible for what happens on external websites. Do not connect your wallet to random sites.
-    </div>
-    <button id="website-disclaimer-continue" style="padding:0.6em 1.5em;background:#8247e5;color:#fff;border:none;border-radius:8px;font-size:1em;cursor:pointer;">Continue</button>
+  <!-- ESC Hint -->
+  <div id="esc-hint" class="esc-hint">
+    <span style="opacity:0.7;margin-right:0.7em;vertical-align:middle;">
+      <kbd>Esc</kbd>
+    </span>
+    Press Esc to show all projects
   </div>
-</div>
-<script>
-  let sneakPeaksArr = [];
-  let sneakPeaksIdx = 0;
 
-  function showSneakModal(img) {
-    const allProjects = window.projects;
-    for (const project of allProjects) {
-      if (project.sneakPeaks && project.sneakPeaks.includes(img)) {
-        sneakPeaksArr = project.sneakPeaks;
-        sneakPeaksIdx = project.sneakPeaks.indexOf(img);
-        break;
-      }
-    }
-    updateSneakModal();
-    const modal = document.getElementById('sneak-modal');
-    modal.style.display = 'flex';
-    modal.classList.add('active');
-  }
-
-  function updateSneakModal() {
-    const modalImg = document.getElementById('sneak-modal-img');
-    const indicator = document.getElementById('sneak-indicator');
-    modalImg.src = sneakPeaksArr[sneakPeaksIdx];
-    indicator.textContent = `${sneakPeaksIdx + 1} / ${sneakPeaksArr.length}`;
-  }
-
-  document.getElementById('sneak-prev').onclick = function(e) {
-    e.stopPropagation();
-    if (sneakPeaksArr.length) {
-      sneakPeaksIdx = (sneakPeaksIdx > 0) ? sneakPeaksIdx - 1 : sneakPeaksArr.length - 1;
-      updateSneakModal();
-    }
-  };
-
-  document.getElementById('sneak-next').onclick = function(e) {
-    e.stopPropagation();
-    if (sneakPeaksArr.length) {
-      sneakPeaksIdx = (sneakPeaksIdx < sneakPeaksArr.length - 1) ? sneakPeaksIdx + 1 : 0;
-      updateSneakModal();
-    }
-  };
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      const modal = document.getElementById('sneak-modal');
-      if (modal.classList.contains('active')) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
-        event.stopPropagation();
-        return;
-      }
-      if (currentTag !== 'all') {
-        currentTag = 'all';
-        renderGallery();
-      }
-    }
-    });
-  </script>
-</body>
-<div id="esc-hint" style="
-  display:none;
-  position:fixed;
-  bottom:32px;
-  right:32px;
-  background:#18142a; /* убран rgba, теперь полностью непрозрачный */
-  color:#fff;
-  font-size:1.08em;
-  padding:0.85em 1.5em;
-  border-radius:14px;
-  box-shadow:0 4px 24px #0007;
-  z-index:3001;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity 0.3s;
-  font-weight:600;
-  letter-spacing:0.01em;
-">
-  <span style="opacity:0.7;margin-right:0.7em;vertical-align:middle;">
-    <kbd style="background:#23202b;border-radius:6px;padding:0.18em 0.7em 0.18em 0.7em;font-size:0.98em;border:1px solid #3a3160;box-shadow:0 1px 2px #0002;vertical-align:middle;">Esc</kbd>
-  </span>
-  Press Esc to show all projects
-</div>
-
-<script src="background.js"></script>
-<div class="action-buttons">
-  <a href="https://form.typeform.com/to/unU0N20P" target="_blank" class="submit-project-btn">
-    <span class="btn-icon">+</span>
-    <div class="btn-text">
-      <div class="btn-title">Submit Project</div>
-      <div class="btn-subtitle">Click here to submit a new project</div>
-    </div>
-  </a>
-  <a href="https://form.typeform.com/to/x85EYYre" target="_blank" class="feedback-btn">
-    <span class="btn-icon">+</span>
-    <div class="btn-text">
-      <div class="btn-title">Feedback</div>
-      <div class="btn-subtitle">Click here to send your feedback</div>
-    </div>
-  </a>
-</div>
-<footer>
-  <div style="color:#b9b9c9;font-size:1.05em;margin-bottom:0.5em;">
-    Made with 💜 <span style="opacity:0.7;">by</span>
-    <a href="https://twitter.com/eth_nukl1on" target="_blank" style="color:var(--accent-color);text-decoration:none;">@eth_nukl1on</a>
+  <!-- Floating Action Buttons -->
+  <div class="floating-buttons">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeBZfn-rB9x3nxm35hqR3AF-NnoBH0aPtfdQpVzQWhrlz1K0g/viewform" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="fab fab-submit" 
+       title="Submit Project">
+      <i class="fas fa-plus" aria-hidden="true"></i>
+      <span class="fab-text">Submit</span>
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdbLn1ByEKVPaNtiMmgbF4k2vrWAd9CotFLJ_331p6vf7zyHg/viewform" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="fab fab-feedback" 
+       title="Send Feedback">
+      <i class="fas fa-comment" aria-hidden="true"></i>
+      <span class="fab-text">Feedback</span>
+    </a>
   </div>
-  <div style="color:#7a7a8c;font-size:0.95em;opacity:0.7;">
-    2025 NadRealm
-  </div>
-</footer>
-</script>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-text">
+      Made with 💜 <span style="opacity:0.7;">by</span>
+      <a href="https://twitter.com/eth_nukl1on" target="_blank" rel="noopener noreferrer" class="footer-link">@eth_nukl1on</a>
+    </div>
+    <div class="footer-copyright">
+      2025 NadRealm
+    </div>
+  </footer>
+  
+  <!-- Scripts -->
+  <script src="projects.js"></script>
+  <script src="main.js"></script>
+  <script src="background.js"></script>
 </body>
 </html>
